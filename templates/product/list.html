@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+     <main class="main">
+        	<div class="page-header text-center" style="background-image: url({% static 'assets/images/page-header-bg.jpg' %})">
+        		<div class="container">
+        			<h1 class="page-title">{{page_title|safe}}</h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+                <div class="container">
+                    <ol class="breadcrumb col-lg-8 col-md-10 col-sm-12 m-auto">
+
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        {% if p_type %}
+                            <li class="breadcrumb-item"><a href="{% url 'products' %}">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{p_type}}</li>
+                        {% else %}
+                            <li class="breadcrumb-item active" aria-current="page">Products</li>
+                        {% endif %}
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+                <div class="container">
+        			<div class="toolbox d-none">
+                        <div class="toolbox-center">
+                            <div class="toolbox-info">
+                                Showing <span>{{products.paginator.per_page}} of {{products.paginator.num_pages}}</span> Products
+                            </div><!-- End .toolbox-info -->
+                        </div><!-- End .toolbox-center -->
+
+        				<div class="toolbox-right">
+        					<div class="toolbox-sort">
+        						<label for="sortby">Sort by:</label>
+        						<div class="select-custom">
+									<select name="sortby" id="sortby" class="form-control">
+										<option value="popularity" selected="selected">Most Popular</option>
+										<option value="rating">Most Rated</option>
+										<option value="date">Date</option>
+									</select>
+								</div>
+        					</div><!-- End .toolbox-sort -->
+        				</div><!-- End .toolbox-right -->
+        			</div><!-- End .toolbox -->
+
+                    <div class="products col-lg-8 col-md-10 col-sm-12 pl-0 pr-0 m-auto">
+                        <div class="row justify-content-center">
+                            {% if products %}
+                                {% for item in products %}
+                                <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
+                                    <div class="product product-7 text-center">
+                                        <figure class="product-media">
+                                            <a href="{% url 'product.details' item.id %}">
+                                                <img src="{{item.image.url}}" alt="{{item.name}}" class="product-image">
+                                                <img src="{{item.image2.url}}" alt="{{item.name}}" class="product-image-hover">
+                                            </a>
+
+                <!--                            <div class="product-action-vertical">-->
+                <!--                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>-->
+                <!--                                <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>-->
+                <!--                            </div>-->
+
+                                            <div class="product-action">
+                                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            </div><!-- End .product-action -->
+                                        </figure><!-- End .product-media -->
+
+                                        <div class="product-body">
+                                            <h3 class="product-title"><a href="product.html">{{item.name}}</a></h3><!-- End .product-title -->
+                                            <div class="product-price">
+                                                <span class="new-price">${{item.price}}</span>
+                                            </div><!-- End .product-price -->
+                                        </div><!-- End .product-body -->
+                                    </div><!-- End .product -->
+                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+
+                                {% endfor %}
+                            {% else %}
+                                <h4 class="text-center">Product not found</h4>
+                            {% endif %}
+
+                        </div><!-- End .row -->
+
+                        {% if products.number != products.paginator.num_pages %}
+                        <div class="load-more-container d-flex justify-content-center">
+<!--                            <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i class="icon-refresh"></i></a>-->
+                            <nav aria-label="Page navigation">
+							    <ul class="pagination">
+							        <li class="page-item {% if products.has_previous %} {% else %} disabled {% endif %}">
+                                        {% if products.has_previous %}
+                                            <a class="page-link page-link-prev" href="?page={{ products.previous_page_number }}" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                                <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                            </a>
+                                        {% else %}
+                                            <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                                <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                            </a>
+                                        {% endif %}
+							        </li>
+							        <li class="page-item active" aria-current="page">
+                                        Page {{ products.number }} of {{ products.paginator.num_pages }}.
+                                    </li>
+                                    {% if products.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link page-link-next" href="?page={{ products.next_page_number }}" aria-label="Next">
+                                                Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link page-link-next" href="javascript:void(0)" aria-label="Next">
+                                                Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+							    </ul>
+							</nav>
+                        </div><!-- End .load-more-container -->
+                        {% endif %}
+
+                    </div><!-- End .products -->
+
+                </div><!-- End .container -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+{% endblock  %}
